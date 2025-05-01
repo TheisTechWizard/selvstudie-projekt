@@ -14,5 +14,33 @@ Dette er backend-delen af projektet, bygget med Django.
 
 Følg disse trin for at installere og køre projektet lokalt:
 
+### 1. Opret virtuelt miljø
+Åben cmd i /selvstudie-projekt/
 
+```sh
 python -m venv venv
+```
+
+```sh
+venv\Scripts\activate
+```
+
+### 2. Installer afhængigheder
+
+```sh
+pip install django
+```
+
+### 3. Gå til backend-mappen
+
+```sh
+cd backend
+```
+
+### 4. Kør udviklingsserveren
+```sh
+python manage.py runserver
+```
+
+Serveren vil nu være tilgængelig på:
+http://127.0.0.1:8000/
