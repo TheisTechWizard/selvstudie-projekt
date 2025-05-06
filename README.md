@@ -28,7 +28,7 @@ venv\Scripts\activate
 ### 2. Installer afhængigheder
 
 ```sh
-pip install django
+pip install -r requirements.txt
 ```
 
 ### 3. Gå til backend-mappen
