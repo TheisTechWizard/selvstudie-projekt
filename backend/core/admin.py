@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Book
+from .models import Annonce  # Importér din model
+from .models import Category
 
-# Register your models here.
-admin.site.register(Book)
+admin.site.register(Annonce)
+admin.site.register(Category)
