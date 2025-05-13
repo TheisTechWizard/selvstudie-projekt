@@ -3,7 +3,7 @@ import Input from "../components/input.jsx";
 import Button from "../components/button.jsx";
 import Card from "../components/card.jsx";
 import CardContent from "../components/cardContent.jsx";
-// import "../../assets/scss/pages/Market.scss";
+import "../../src/assets/scss/pages/Market.scss"
 
 const products = Array(8).fill({
   title: "GTA VI",

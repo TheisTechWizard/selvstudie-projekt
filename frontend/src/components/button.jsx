@@ -1,5 +1,5 @@
 import React from "react";
-// import "../../assets/scss/components/button.scss";
+import "../../src/assets/scss/components/button.scss"; // Adjust the path as necessary 
 
 const Button = ({ children, onClick, className = "" }) => {
   return (
