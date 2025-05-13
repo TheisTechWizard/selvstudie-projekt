@@ -17,14 +17,14 @@ const MarketPage = () => {
 
   return (
     <div className="market-page">
-      <header className="market-header">
+      {/* <header className="market-header">
         <nav>
           <a href="#">Markested</a>
           <a href="#">Mine Annoncer</a>
           <a href="#">Login</a>
           <img src="/avatar.png" alt="avatar" className="avatar" />
         </nav>
-      </header>
+      </header> */}
 
       <div className="search-bar">
         <Input placeholder="Søg" />

@@ -1,0 +1,17 @@
+nav {
+  background-color: #2196f3;
+  padding: 10px 20px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+nav a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
