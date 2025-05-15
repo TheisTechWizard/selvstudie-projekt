@@ -22,15 +22,7 @@ const myListings = Array(2).fill({
 const User = () => {
   return (
     <div className="user-page">
-      <nav className="top-nav">
-        <div className="nav-links">
-          <a href="/market">Markedssted</a>
-          <a href="/mine-annoncer">Mine Annoncer</a>
-          <a href="/login">Login</a>
-        </div>
-        <img src={user.image} alt="Profile" className="profile-pic" />
-      </nav>
-
+      
       <section className="profile-card">
         <img src={user.image} alt="User" className="profile-img" />
         <div className="user-info">
