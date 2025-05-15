@@ -4,6 +4,7 @@ import Input from "../components/input.jsx"
 import Button from "../components/button.jsx"
 import Card from "../components/card.jsx"
 import CardContent from "../components/cardContent.jsx"
+import "../../src/assets/scss/pages/userPage.scss"
 
 const user = {
   name: "Andreas Sigvald Møller Steffensen",
