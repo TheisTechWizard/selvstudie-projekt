@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react"
-import axios from "axios"
 import Input from "../components/input.jsx"
 import Button from "../components/button.jsx"
 import Card from "../components/card.jsx"
