@@ -9,7 +9,7 @@ const Login = ({ setIsAuthenticated }) => {
   const handleLogin = async (e) => {
     e.preventDefault()
 
-    const response = await fetch("", {
+    const response = await fetch("/api/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -18,7 +18,7 @@ const Login = ({ setIsAuthenticated }) => {
     if (response.ok) {
       const data = await response.json()
       localStorage.setItem("token", data.access) // Gem JWT-token
-      localStorage.setItem("username", username) // Gem brugernavn
+      localStorage.setItem("user", JSON.stringify({ username })) // Gem brugernavn
       setIsAuthenticated(true) // Opdater auth-status
       alert("Login successful")
     } else {
