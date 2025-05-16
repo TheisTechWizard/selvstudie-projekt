@@ -9,5 +9,5 @@ urlpatterns = [
     path('annoncer/', get_annoncer, name='get_annoncer'),
     path('annoncer/create/', create_annonce, name='create_annonce'),
     path('annoncer/<int:annonce_id>/', manage_annoncer, name='manage_annoncer'),  # Rediger og slet
-    path('api/categories/', get_categories, name='get_categories'),
+    path('categories/', get_categories, name='get_categories'),
 ]
