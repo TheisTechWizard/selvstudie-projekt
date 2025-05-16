@@ -4,6 +4,8 @@ import Input from "../components/input.jsx"
 import Button from "../components/button.jsx"
 import Card from "../components/card.jsx"
 import CardContent from "../components/cardContent.jsx"
+import EditAnnonceModal from "../components/editAnnoncer.jsx"
+import CreateAnnonceModal from "../components/createAnnonce.jsx"
 import "../../src/assets/scss/pages/Market.scss"
 
 // const products = Array(8).fill({
@@ -19,13 +21,22 @@ const MarketPage = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
   const [selectedProduct, setSelectedProduct] = useState(null)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [currentUser, setCurrentUser] = useState(null)
 
-  // Hent kategorier ved load
   useEffect(() => {
-    axios
-      .get("/api/categories/")
-      .then((res) => setCategories(res.data))
-      .catch((err) => console.error("Fejl ved hentning af kategorier:", err))
+    const user = localStorage.getItem("user")
+    if (user) {
+      setCurrentUser(JSON.parse(user))
+    }
+  }, [])
+
+  useEffect(() => {
+    axios.get("/api/categories/").then((res) => {
+      console.log("API-respons for kategorier:", res.data)
+      setCategories(res.data)
+    })
   }, [])
 
   // Bruger useCallback for at sikre, at handleSearch kun opdateres når searchTerm eller selectedCategory ændres.
@@ -50,16 +61,38 @@ const MarketPage = () => {
     return () => clearTimeout(delayDebounceFn)
   }, [handleSearch])
 
+  const openEditModal = (product) => {
+    setSelectedProduct(product)
+    setIsEditModalOpen(true)
+  }
+
+  const handleDeleteAnnonce = async (id) => {
+    const confirm = window.confirm(
+      "Er du sikker på, at du vil slette annoncen?"
+    )
+    if (!confirm) return
+
+    try {
+      const token = localStorage.getItem("token")
+      await axios.delete(`/api/annoncer/${id}/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      setProducts((prev) => prev.filter((p) => p.id !== id))
+    } catch (err) {
+      console.error("Fejl ved sletning:", err)
+      alert("Kunne ikke slette annoncen.")
+    }
+  }
   return (
     <div className="market-page">
-      {/* <header className="market-header">
+      <header className="market-header">
         <nav>
-          <a href="#">Markested</a>
+          <a href="#">Markedsplads</a>
           <a href="#">Mine Annoncer</a>
           <a href="#">Login</a>
           <img src="/avatar.png" alt="avatar" className="avatar" />
         </nav>
-      </header> */}
+      </header>
 
       {/* <div className="search-bar">
         <Input placeholder="Søg" />
@@ -86,11 +119,19 @@ const MarketPage = () => {
         <Button className="search-btn" onClick={handleSearch}>
           🔍
         </Button>
+        {currentUser && (
+          <Button
+            className="create-btn"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            + Opret Annonce
+          </Button>
+        )}
       </div>
 
       <main className="product-grid">
-        {products.map((product, idx) => (
-          <Card key={idx} className="product-card">
+        {products.map((product) => (
+          <Card key={product.id} className="product-card">
             <CardContent>
               <img
                 src={product.image}
@@ -98,16 +139,27 @@ const MarketPage = () => {
                 className="product-image"
               />
               <h3>{product.title}</h3>
-              <p>{product.description}</p>
+              <p>{product.content}</p>
               <p className="price">{product.price}</p>
+
               <Button onClick={() => setSelectedProduct(product)}>
                 Se annonce
               </Button>
+
+              {currentUser?.username === product.user_username && (
+                <div className="product-actions">
+                  <Button onClick={() => openEditModal(product)}>
+                    Rediger
+                  </Button>
+                  <Button onClick={() => handleDeleteAnnonce(product.id)}>
+                    Slet
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
       </main>
-
       {/* {selectedProduct && (
         <div
           className="product-overlay"
@@ -153,19 +205,46 @@ const MarketPage = () => {
               )}
 
               <div className="categories">
-                {selectedProduct.categories?.map((cat) => (
+                {selectedProduct.category_details?.map((cat) => (
                   <span key={cat.id} className="category-tag">
                     {cat.name}
                   </span>
                 ))}
               </div>
+
               <div className="rating">
                 ⭐⭐⭐⭐⭐ <span>(5357)</span>
               </div>
+
               <Button>Køb</Button>
             </div>
           </div>
         </div>
+      )}
+
+      {isEditModalOpen && selectedProduct && (
+        <EditAnnonceModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          annonceId={selectedProduct.id}
+          onUpdated={(updatedAnnonce) => {
+            setProducts((prev) =>
+              prev.map((p) => (p.id === updatedAnnonce.id ? updatedAnnonce : p))
+            )
+            setIsEditModalOpen(false)
+          }}
+        />
+      )}
+
+      {isCreateModalOpen && (
+        <CreateAnnonceModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={(newAnnonce) => {
+            setProducts((prev) => [newAnnonce, ...prev])
+            setIsCreateModalOpen(false)
+          }}
+        />
       )}
     </div>
   )

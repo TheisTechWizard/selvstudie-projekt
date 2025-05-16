@@ -1,12 +1,27 @@
-//import { useState } from 'react'
-import { Routes, Route, Link } from 'react-router-dom';
-import Home from './pages/Home';
-import About from './pages/About';
-import Market from './pages/Market'; 
-import UserPage from './pages/UserPage';
-import './assets/scss/main.scss'
+import { useState, useEffect } from "react"
+import { Routes, Route, Link, Navigate } from "react-router-dom"
+import Home from "./pages/Home"
+import About from "./pages/About"
+import Market from "./pages/Market"
+import UserPage from "./pages/UserPage"
+import Login from "./pages/login"
+import Register from "./pages/register"
+import "./assets/scss/main.scss"
 import "../src/assets/scss/components/nav.scss"
+
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    setIsAuthenticated(!!token)
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    setIsAuthenticated(false)
+  }
 
   return (
     <div>
@@ -15,16 +30,32 @@ function App() {
         <Link to="/about">About</Link>
         <Link to="/market">Market</Link>
         <Link to="/user">User</Link>
+        {isAuthenticated ? (
+          <button onClick={handleLogout}>Log ud</button>
+        ) : (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Registrer</Link>
+          </>
+        )}
       </nav>
 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/market" element={<Market />} />
-        <Route path="/user" element={<UserPage />} />
+        <Route
+          path="/user"
+          element={isAuthenticated ? <UserPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/login"
+          element={<Login setIsAuthenticated={setIsAuthenticated} />}
+        />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </div>
-  );
+  )
 }
 
 export default App
