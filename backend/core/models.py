@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import FileExtensionValidator
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -11,6 +12,12 @@ class Category(models.Model):
         return self.name
 
 class Annonce(models.Model):
+    image = models.ImageField(
+    upload_to='annonce_images/',
+    null=True,
+    blank=True,
+    validators=[FileExtensionValidator(['jpg', 'png', 'jpeg'])],
+    )
     title = models.CharField(max_length=100)
     content = models.TextField()
     price = models.CharField(max_length=20)
