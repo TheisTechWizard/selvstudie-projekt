@@ -17,7 +17,9 @@ const Login = ({ setIsAuthenticated }) => {
 
     if (response.ok) {
       const data = await response.json()
-      localStorage.setItem("token", data.access) // Gem JWT-token
+      console.log("Login response:", data)
+      localStorage.setItem("token", data.access)
+      localStorage.setItem("username", data.username)
       localStorage.setItem("user", JSON.stringify({ username })) // Gem brugernavn
       setIsAuthenticated(true) // Opdater auth-status
       alert("Login successful")

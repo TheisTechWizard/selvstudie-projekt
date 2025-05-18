@@ -4,7 +4,7 @@ import Input from "./input"
 import Button from "./button"
 import axios from "axios"
 
-const EditAnnonceModal = ({ isOpen, onClose, annonceId, onUpdated }) => {
+const EditAnnonceModal = ({ isOpen, onClose, id, onUpdated }) => {
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [price, setPrice] = useState("")
@@ -13,12 +13,13 @@ const EditAnnonceModal = ({ isOpen, onClose, annonceId, onUpdated }) => {
 
   const token = localStorage.getItem("token")
 
+  // Hent annonce til redigering
   useEffect(() => {
-    if (!annonceId || !isOpen) return
+    if (!id || !isOpen) return
 
     const fetchAnnonce = async () => {
       try {
-        const res = await axios.get(`/api/annoncer/${annonceId}/`, {
+        const res = await axios.get(`/api/annoncer/${id}/`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         const annonce = res.data
@@ -33,8 +34,9 @@ const EditAnnonceModal = ({ isOpen, onClose, annonceId, onUpdated }) => {
     }
 
     fetchAnnonce()
-  })
+  }, [id, isOpen])
 
+  // Hent kategorier
   useEffect(() => {
     axios
       .get("/api/categories/")
@@ -46,7 +48,7 @@ const EditAnnonceModal = ({ isOpen, onClose, annonceId, onUpdated }) => {
     e.preventDefault()
     try {
       const res = await axios.put(
-        `/api/annoncer/${annonceId}/`,
+        `/api/annoncer/${id}/`,
         {
           title,
           content,
@@ -107,7 +109,12 @@ const EditAnnonceModal = ({ isOpen, onClose, annonceId, onUpdated }) => {
             </option>
           ))}
         </select>
-        <Button type="submit">Opdater</Button>
+        <div className="modal-buttons">
+          <Button type="submit">Opdater</Button>
+          <Button type="button" onClick={onClose}>
+            Annuller
+          </Button>
+        </div>
       </form>
     </Modal>
   )
