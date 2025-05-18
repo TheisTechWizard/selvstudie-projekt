@@ -8,6 +8,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer, AnnonceSerializer, CategorySerializer
 from .models import Annonce, Category
 from django.contrib.auth import authenticate
+from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 # Brugerregistrering
 @api_view(['POST'])
