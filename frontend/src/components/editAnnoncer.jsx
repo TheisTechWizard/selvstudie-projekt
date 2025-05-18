@@ -6,27 +6,31 @@ import axios from "axios"
 
 const EditAnnonceModal = ({ isOpen, onClose, id, onUpdated }) => {
   const [title, setTitle] = useState("")
+  const [image, setImage] = useState(null)
+  const [existingImage, setExistingImage] = useState(null)
   const [content, setContent] = useState("")
   const [price, setPrice] = useState("")
   const [categories, setCategories] = useState([])
   const [selectedCategories, setSelectedCategories] = useState([])
-
+  const backendUrl = import.meta.env.VITE_BACKEND_URL
   const token = localStorage.getItem("token")
 
-  // Hent annonce til redigering
   useEffect(() => {
     if (!id || !isOpen) return
 
     const fetchAnnonce = async () => {
       try {
         const res = await axios.get(`/api/annoncer/${id}/`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
         const annonce = res.data
         setTitle(annonce.title)
         setContent(annonce.content)
         setPrice(annonce.price)
         setSelectedCategories(annonce.categories)
+        setExistingImage(annonce.image) // <-- Gem billedsti
       } catch (err) {
         console.error("Fejl ved hentning:", err)
         alert("Kunne ikke hente annoncen.")
@@ -36,7 +40,6 @@ const EditAnnonceModal = ({ isOpen, onClose, id, onUpdated }) => {
     fetchAnnonce()
   }, [id, isOpen])
 
-  // Hent kategorier
   useEffect(() => {
     axios
       .get("/api/categories/")
@@ -46,22 +49,21 @@ const EditAnnonceModal = ({ isOpen, onClose, id, onUpdated }) => {
 
   const handleUpdate = async (e) => {
     e.preventDefault()
+
+    const formData = new FormData()
+    formData.append("title", title)
+    formData.append("content", content)
+    formData.append("price", price)
+    selectedCategories.forEach((cat) => formData.append("categories", cat))
+    if (image) formData.append("image", image)
+
     try {
-      const res = await axios.put(
-        `/api/annoncer/${id}/`,
-        {
-          title,
-          content,
-          price,
-          categories: selectedCategories,
+      const res = await axios.put(`/api/annoncer/${id}/`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      })
       onUpdated(res.data)
       onClose()
     } catch (err) {
@@ -81,12 +83,32 @@ const EditAnnonceModal = ({ isOpen, onClose, id, onUpdated }) => {
           onChange={(e) => setTitle(e.target.value)}
           required
         />
+
+        {/* Eksisterende billede preview */}
+        {existingImage && (
+          <div style={{ marginBottom: "1rem" }}>
+            <p>Eksisterende billede:</p>
+            <img
+              src={`${backendUrl}${existingImage}`}
+              alt="Eksisterende"
+              style={{ width: "200px", borderRadius: "8px" }}
+            />
+          </div>
+        )}
+
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+        />
+
         <textarea
           placeholder="Beskrivelse"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           required
         />
+
         <Input
           type="number"
           placeholder="Pris"
@@ -94,6 +116,7 @@ const EditAnnonceModal = ({ isOpen, onClose, id, onUpdated }) => {
           onChange={(e) => setPrice(e.target.value)}
           required
         />
+
         <select
           multiple
           value={selectedCategories}
@@ -109,6 +132,7 @@ const EditAnnonceModal = ({ isOpen, onClose, id, onUpdated }) => {
             </option>
           ))}
         </select>
+
         <div className="modal-buttons">
           <Button type="submit">Opdater</Button>
           <Button type="button" onClick={onClose}>

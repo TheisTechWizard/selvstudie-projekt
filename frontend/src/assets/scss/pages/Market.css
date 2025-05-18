@@ -9,16 +9,19 @@
   display: flex;
   justify-content: flex-end;
 }
+
 .market-header nav {
   display: flex;
   gap: 20px;
   align-items: center;
 }
+
 .market-header nav a {
   color: white;
   text-decoration: none;
   font-weight: 500;
 }
+
 .market-header nav .avatar {
   width: 32px;
   height: 32px;
@@ -31,6 +34,7 @@
   display: flex;
   gap: 8px;
 }
+
 .search-bar .search-btn,
 .search-bar .list-btn {
   min-width: 40px;
@@ -44,15 +48,13 @@
   background-color: #0080ff;
 }
 
-.product-card .product-image {
-  width: 100%;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
+
+
 .product-card h3 {
   margin: 0;
   font-size: 1.1rem;
 }
+
 .product-card .price {
   font-weight: bold;
   margin: 8px 0;
@@ -70,6 +72,7 @@
   justify-content: center;
   z-index: 999;
 }
+
 .product-overlay .overlay-content {
   background: white;
   padding: 20px;
@@ -79,25 +82,31 @@
   display: flex;
   gap: 20px;
 }
+
 .product-overlay .overlay-content img {
   width: 50%;
   border-radius: 4px;
 }
+
 .product-overlay .overlay-content .overlay-details {
   flex: 1;
 }
+
 .product-overlay .overlay-content .overlay-details h2 {
   margin-top: 0;
 }
+
 .product-overlay .overlay-content .overlay-details .rating {
   margin: 10px 0;
   color: #4caf50;
   font-weight: bold;
 }
+
 .product-overlay .overlay-content .overlay-details .rating span {
   font-size: 0.8rem;
   color: gray;
 }
+
 .product-overlay .overlay-content .overlay-details a {
   color: #2196f3;
   text-decoration: underline;

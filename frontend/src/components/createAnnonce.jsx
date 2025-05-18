@@ -6,6 +6,7 @@ import axios from "axios"
 
 const CreateAnnonceModal = ({ isOpen, onClose, onSuccess }) => {
   const [title, setTitle] = useState("")
+  const [image, setImage] = useState(null)
   const [content, setContent] = useState("")
   const [price, setPrice] = useState("")
   const [categories, setCategories] = useState([])
@@ -22,32 +23,57 @@ const CreateAnnonceModal = ({ isOpen, onClose, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    const formData = new FormData()
+    formData.append("title", title)
+    formData.append("content", content)
+    formData.append("price", price)
+    selectedCategories.forEach((cat) => formData.append("categories", cat))
+    if (image) formData.append("image", image)
+
     try {
-      console.log("Bruger-token:", token)
-      const response = await axios.post(
-        "/api/annoncer/create/",
-        {
-          title,
-          content,
-          price,
-          categories: selectedCategories,
+      const response = await axios.post("/api/annoncer/create/", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      })
+
       onSuccess(response.data)
       onClose()
     } catch (err) {
-      console.error("Fejl:", err.response?.data || err.message)
-      alert(
-        "Kunne ikke oprette annoncen: " + JSON.stringify(err.response?.data)
-      )
+      console.error("Fejl:", err)
+      alert("Kunne ikke oprette annoncen.")
     }
   }
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault()
+  //   try {
+  //     console.log("Bruger-token:", token)
+  //     const response = await axios.post(
+  //       "/api/annoncer/create/",
+  //       {
+  //         title,
+  //         content,
+  //         price,
+  //         categories: selectedCategories,
+  //       },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     )
+  //     onSuccess(response.data)
+  //     onClose()
+  //   } catch (err) {
+  //     console.error("Fejl:", err.response?.data || err.message)
+  //     alert(
+  //       "Kunne ikke oprette annoncen: " + JSON.stringify(err.response?.data)
+  //     )
+  //   }
+  // }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -59,6 +85,11 @@ const CreateAnnonceModal = ({ isOpen, onClose, onSuccess }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
+        />
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
         />
         <textarea
           placeholder="Beskrivelse"
