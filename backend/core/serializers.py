@@ -11,20 +11,20 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class AnnonceSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source='user.username', read_only=True)
-
+    # Returner detaljerede kategoridata ved GET
+    category_details = CategorySerializer(source='categories', many=True, read_only=True)
+    image = serializers.ImageField(required=False, allow_null=True)
     # Tillad at sende kategori-id'er ved oprettelse/redigering
     categories = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Category.objects.all()
     )
 
-    # Returner detaljerede kategoridata ved GET
-    category_details = CategorySerializer(source='categories', many=True, read_only=True)
-
     class Meta:
         model = Annonce
         fields = [
             'id',
+            'image',
             'title',
             'content',
             'price',

@@ -6,15 +6,19 @@ from .views import (
     create_annonce,
     manage_annoncer,
     get_categories,
-    login,  # ← tilføj din egen login-funktion
+    login,
 )
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('register/', register, name='register'),
-    path('login/', login, name='login'),  # ← brug din egen login-view her
+    path('login/', login, name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('annoncer/', get_annoncer, name='get_annoncer'),
     path('annoncer/create/', create_annonce, name='create_annonce'),
     path('annoncer/<int:annonce_id>/', manage_annoncer, name='manage_annoncer'),
     path('categories/', get_categories, name='get_categories'),
 ]
+
+
