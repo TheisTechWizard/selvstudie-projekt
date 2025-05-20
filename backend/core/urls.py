@@ -6,7 +6,7 @@ from .views import (
     create_annonce,
     manage_annoncer,
     get_categories,
-    login,
+    login, get_user, get_user_annoncer
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -19,6 +19,8 @@ urlpatterns = [
     path('annoncer/create/', create_annonce, name='create_annonce'),
     path('annoncer/<int:annonce_id>/', manage_annoncer, name='manage_annoncer'),
     path('categories/', get_categories, name='get_categories'),
+    path('users/<int:user_id>/', get_user, name='get_user'),
+    path("users/<int:user_id>/annoncer/", get_user_annoncer, name='get_user_annoncer'),
 ]
 
 

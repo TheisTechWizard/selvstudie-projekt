@@ -1,10 +1,12 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { jwtDecode } from "jwt-decode"
 
 const Login = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const navigate = useNavigate()
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -17,11 +19,14 @@ const Login = ({ setIsAuthenticated }) => {
 
     if (response.ok) {
       const data = await response.json()
-      console.log("Login response:", data)
       localStorage.setItem("token", data.access)
-      localStorage.setItem("username", data.username)
-      localStorage.setItem("user", JSON.stringify({ username })) // Gem brugernavn
-      setIsAuthenticated(true) // Opdater auth-status
+
+      const decoded = jwtDecode(data.access)
+      const userId = decoded.user_id // JWT'en skal indeholde dette!
+
+      localStorage.setItem("userId", userId)
+      setIsAuthenticated(true)
+      navigate(`/user/${userId}`)
       alert("Login successful")
     } else {
       setError("Invalid credentials")
