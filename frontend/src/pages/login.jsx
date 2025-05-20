@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { jwtDecode } from "jwt-decode"
 
 const Login = ({ setIsAuthenticated }) => {
-  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const navigate = useNavigate()
@@ -14,7 +14,7 @@ const Login = ({ setIsAuthenticated }) => {
     const response = await fetch("/api/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
     })
 
     if (response.ok) {
@@ -39,9 +39,9 @@ const Login = ({ setIsAuthenticated }) => {
       <form onSubmit={handleLogin}>
         <input
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <input
           type="password"

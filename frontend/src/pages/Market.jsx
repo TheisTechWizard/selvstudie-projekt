@@ -18,7 +18,6 @@ const Annoncer = () => {
   const [selectedCategory, setSelectedCategory] = useState("")
   const backendUrl = import.meta.env.VITE_BACKEND_URL
   const token = localStorage.getItem("token")
-  const username = localStorage.getItem("username")
 
   useEffect(() => {
     // Først hent kategorier
@@ -159,7 +158,8 @@ const Annoncer = () => {
                 Se mere
               </button>
 
-              {username === annonce.user_username && (
+              {String(localStorage.getItem("userId")) ===
+                String(annonce.user_id) && (
                 <>
                   <button
                     onClick={() => {

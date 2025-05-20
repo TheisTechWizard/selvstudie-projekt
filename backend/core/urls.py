@@ -6,10 +6,10 @@ from .views import (
     create_annonce,
     manage_annoncer,
     get_categories,
-    login, get_user, get_user_annoncer
+    login,
+    get_user,
+    get_user_annoncer
 )
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -22,5 +22,3 @@ urlpatterns = [
     path('users/<int:user_id>/', get_user, name='get_user'),
     path("users/<int:user_id>/annoncer/", get_user_annoncer, name='get_user_annoncer'),
 ]
-
-
