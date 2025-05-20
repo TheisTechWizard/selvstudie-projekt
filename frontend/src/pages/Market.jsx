@@ -242,8 +242,8 @@ const Annoncer = () => {
             <button onClick={() => alert("Købsfunktion ikke implementeret")}>
               Køb
             </button>
+            <GoogleMaps address="Ny Kastetvej 24"/>
           </div>
-        <GoogleMaps address="Aalborg"/>
         </div>
       )}
     </div>
