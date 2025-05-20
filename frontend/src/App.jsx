@@ -29,7 +29,7 @@ function App() {
         <Link to="/">Home</Link>
         <Link to="/about">About</Link>
         <Link to="/market">Market</Link>
-        <Link to="/user">User</Link>
+        <Link to={`/user/${localStorage.getItem("userId")}`}>User</Link>
         {isAuthenticated ? (
           <button onClick={handleLogout}>Log ud</button>
         ) : (
@@ -45,7 +45,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/market" element={<Market />} />
         <Route
-          path="/user"
+          path="/user/:userId"
           element={isAuthenticated ? <UserPage /> : <Navigate to="/login" />}
         />
         <Route
