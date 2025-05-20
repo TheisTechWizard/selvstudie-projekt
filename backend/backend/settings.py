@@ -115,6 +115,15 @@ DATABASES = {
         'HOST': '79.171.148.183',
         'PORT': '5432',
     }
+    #If we use docker-compose to run all containers
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': os.getenv("DB_NAME"),
+    #     'USER': os.getenv("DB_USER"),
+    #     'PASSWORD': os.getenv("DB_PASSWORD"),
+    #     'HOST': os.getenv("DB_HOST"),
+    #     'PORT': os.getenv("DB_PORT", "5432"),
+    # }
 }
 
 
