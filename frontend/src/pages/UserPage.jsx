@@ -5,7 +5,6 @@ import Card from "../components/card.jsx"
 import CardContent from "../components/cardContent.jsx"
 import EditAnnoncer from "../components/editAnnoncer"
 import CreateAnnonce from "../components/createAnnonce"
-import "../../src/assets/scss/pages/userPage.scss"
 
 const UserPage = () => {
   const { userId } = useParams()

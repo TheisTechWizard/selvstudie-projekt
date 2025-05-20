@@ -1,5 +1,4 @@
 import React from "react"
-import "../../src/assets/scss/components/input.scss"
 
 const Input = ({
   placeholder,

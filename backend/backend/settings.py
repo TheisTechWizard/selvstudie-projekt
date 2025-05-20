@@ -98,22 +98,22 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     #If our server explodes use local image
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_db',
-        'USER': 'django',
-        'PASSWORD': 'mysecretpassword',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql',
     #     'NAME': 'django_db',
     #     'USER': 'django',
-    #     'PASSWORD': 'supersecret',
-    #     'HOST': '79.171.148.183',
+    #     'PASSWORD': 'mysecretpassword',
+    #     'HOST': 'localhost',
     #     'PORT': '5432',
     # }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'django_db',
+        'USER': 'django',
+        'PASSWORD': 'supersecret',
+        'HOST': '79.171.148.183',
+        'PORT': '5432',
+    }
 }
 
 

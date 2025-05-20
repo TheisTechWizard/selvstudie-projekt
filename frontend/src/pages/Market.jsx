@@ -4,7 +4,6 @@ import Card from "../components/card.jsx"
 import CardContent from "../components/cardContent.jsx"
 import CreateAnnonce from "../components/createAnnonce"
 import EditAnnoncer from "../components/editAnnoncer"
-import "../../src/assets/scss/pages/Market.scss"
 
 const Annoncer = () => {
   const [annoncer, setAnnoncer] = useState([])
