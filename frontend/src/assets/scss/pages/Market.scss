@@ -3,30 +3,31 @@
   min-height: 100vh;
 }
 
-.market-header {
-  background-color: #2196f3;
-  padding: 12px 24px;
-  display: flex;
-  justify-content: flex-end;
+// .market-header {
+//   background-color: #2196f3;
+//   padding: 12px 24px;
+//   display: flex;
+//   justify-content: flex-end;
+//   border-radius: 12px;
 
-  nav {
-    display: flex;
-    gap: 20px;
-    align-items: center;
+//   nav {
+//     display: flex;
+//     gap: 20px;
+//     align-items: center;
 
-    a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-    }
+//     a {
+//       color: white;
+//       text-decoration: none;
+//       font-weight: 500;
+//     }
 
-    .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-    }
-  }
-}
+//     .avatar {
+//       width: 32px;
+//       height: 32px;
+//       border-radius: 50%;
+//     }
+//   }
+// }
 
 .annoncer-container {
   padding: 32px;
