@@ -6,9 +6,11 @@ from .views import (
     create_annonce,
     manage_annoncer,
     get_categories,
-    login,
-    get_user,
-    get_user_annoncer
+    login, 
+    get_user, 
+    get_user_annoncer,
+    get_coords,
+    google_maps_loader
 )
 
 urlpatterns = [
@@ -21,4 +23,6 @@ urlpatterns = [
     path('categories/', get_categories, name='get_categories'),
     path('users/<int:user_id>/', get_user, name='get_user'),
     path("users/<int:user_id>/annoncer/", get_user_annoncer, name='get_user_annoncer'),
+    path("maps/geocode/", get_coords, name="get_coords"),
+    path("maps-loader.js", google_maps_loader),
 ]
