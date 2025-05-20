@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import Card from "../components/card.jsx"
 import CardContent from "../components/cardContent.jsx"
-import CreateAnnonce from "../components/createAnnonce"
-import EditAnnoncer from "../components/editAnnoncer"
+import CreateAnnonce from "../components/createAnnonce.jsx"
+import EditAnnoncer from "../components/editAnnoncer.jsx"
 import "../../src/assets/scss/pages/Market.scss"
 
 const Annoncer = () => {
