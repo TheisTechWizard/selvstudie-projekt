@@ -25,16 +25,16 @@ python -m venv venv
 venv\Scripts\activate
 ```
 
-### 2. Installer afhængigheder
-
-```sh
-pip install -r requirements.txt
-```
-
 ### 3. Gå til backend-mappen
 
 ```sh
 cd backend
+```
+
+### 2. Installer afhængigheder
+
+```sh
+pip install -r requirements.txt
 ```
 
 ### 4. Kør udviklingsserveren
