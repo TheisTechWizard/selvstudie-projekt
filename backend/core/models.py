@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import FileExtensionValidator
+import uuid
 
 # Custom user manager
 class CustomUserManager(BaseUserManager):
@@ -20,6 +21,7 @@ class CustomUserManager(BaseUserManager):
 
 # Custom user model
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) 
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=150, blank=True)
     is_active = models.BooleanField(default=True)
@@ -46,6 +48,7 @@ class Category(models.Model):
 
 # Annonce
 class Annonce(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     image = models.ImageField(
         upload_to='annonce_images/',
         null=True,

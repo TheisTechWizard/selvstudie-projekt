@@ -17,8 +17,8 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('annoncer/', get_annoncer, name='get_annoncer'),
     path('annoncer/create/', create_annonce, name='create_annonce'),
-    path('annoncer/<int:annonce_id>/', manage_annoncer, name='manage_annoncer'),
+    path('annoncer/<uuid:annonce_id>/', manage_annoncer, name='manage_annoncer'), 
     path('categories/', get_categories, name='get_categories'),
-    path('users/<int:user_id>/', get_user, name='get_user'),
-    path("users/<int:user_id>/annoncer/", get_user_annoncer, name='get_user_annoncer'),
+    path('users/<uuid:user_id>/', get_user, name='get_user'),                      
+    path("users/<uuid:user_id>/annoncer/", get_user_annoncer, name='get_user_annoncer'), 
 ]

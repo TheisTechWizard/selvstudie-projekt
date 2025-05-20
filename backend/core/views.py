@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from uuid import UUID
 from .models import Annonce, Category, CustomUser
 from .serializers import UserSerializer, AnnonceSerializer, CategorySerializer
 
@@ -42,27 +42,37 @@ def login(request):
 @permission_classes([IsAuthenticated])
 def get_user(request, user_id):
     try:
-        if request.user.id != user_id:
-            return Response({"detail": "Adgang nægtet."}, status=403)
+        user_uuid = UUID(str(user_id))  # 🛡️ Valider UUID
+    except ValueError:
+        return Response({'detail': 'Ugyldigt bruger-ID (ikke et gyldigt UUID).'}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = CustomUser.objects.get(id=user_id)
+    if request.user.id != user_uuid:
+        return Response({'detail': 'Adgang nægtet.'}, status=status.HTTP_403_FORBIDDEN)
+
+    try:
+        user = CustomUser.objects.get(id=user_uuid)
         return Response({
             "id": user.id,
             "email": user.email,
             "username": user.username
         })
     except CustomUser.DoesNotExist:
-        return Response({"detail": "Bruger ikke fundet."}, status=404)
+        return Response({'detail': 'Bruger ikke fundet.'}, status=status.HTTP_404_NOT_FOUND)
 
 # Hent en brugers annoncer
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_annoncer(request, user_id):
-    if request.user.id != user_id:
-        return Response({"detail": "Adgang nægtet."}, status=403)
+    try:
+        user_uuid = UUID(str(user_id))  # 🛡️ Valider UUID
+    except ValueError:
+        return Response({'detail': 'Ugyldigt bruger-ID (ikke et gyldigt UUID).'}, status=status.HTTP_400_BAD_REQUEST)
 
-    annonces = Annonce.objects.filter(user_id=user_id)
-    serializer = AnnonceSerializer(annonces, many=True)
+    if request.user.id != user_uuid:
+        return Response({'detail': 'Adgang nægtet.'}, status=status.HTTP_403_FORBIDDEN)
+
+    annoncer = Annonce.objects.filter(user_id=user_uuid)
+    serializer = AnnonceSerializer(annoncer, many=True)
     return Response(serializer.data)
 
 # Alle annoncer
@@ -95,10 +105,20 @@ def create_annonce(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def manage_annoncer(request, annonce_id):
-    annonce = get_object_or_404(Annonce, id=annonce_id)
+    try:
+        # Valider og parse UUID
+        annonce_uuid = UUID(str(annonce_id))
+    except ValueError:
+        return Response({'detail': 'Ugyldigt annonce-ID (ikke et gyldigt UUID).'}, status=status.HTTP_400_BAD_REQUEST)
 
+    annonce = get_object_or_404(Annonce, id=annonce_uuid)
+
+    # Tjek ejerskab
     if annonce.user != request.user:
-        return Response({'detail': 'Du har ikke tilladelse til at ændre denne annonce'}, status=status.HTTP_403_FORBIDDEN)
+        return Response(
+            {'detail': 'Du har ikke tilladelse til at ændre denne annonce.'},
+            status=status.HTTP_403_FORBIDDEN
+        )
 
     if request.method == 'GET':
         serializer = AnnonceSerializer(annonce)

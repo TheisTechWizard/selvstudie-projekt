@@ -10,7 +10,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class AnnonceSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source='user.username', read_only=True)
-    user_id = serializers.IntegerField(source='user.id', read_only=True)
+    user_id = serializers.CharField(source='user.id', read_only=True) 
     category_details = CategorySerializer(source='categories', many=True, read_only=True)
     image = serializers.ImageField(required=False, allow_null=True)
     categories = serializers.PrimaryKeyRelatedField(
