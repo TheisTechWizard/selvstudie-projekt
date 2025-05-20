@@ -59,15 +59,31 @@ const Annoncer = () => {
       )
   }, [])
 
-  const handleSearch = () => {
+  useEffect(() => {
+    handleSearch()
+    // eslint-disable-next-line
+  }, [selectedCategory])
+
+  const handleSearch = (categoryValue = selectedCategory) => {
     const params = {}
 
     if (searchTerm) params.search = searchTerm
-    if (selectedCategory) params.category = selectedCategory
+    if (categoryValue) params.category = categoryValue
 
     axios
       .get("/api/annoncer/", { params })
-      .then((response) => setAnnoncer(response.data))
+      .then((response) => {
+        const annoncerWithDetails = response.data.map((annonce) => {
+          const matchedCategories = annonce.categories
+            ? categories.filter((cat) => annonce.categories.includes(cat.id))
+            : []
+          return {
+            ...annonce,
+            category_details: matchedCategories,
+          }
+        })
+        setAnnoncer(annoncerWithDetails)
+      })
       .catch((error) => console.error("Fejl ved søgning i annoncer:", error))
   }
 
@@ -101,7 +117,10 @@ const Annoncer = () => {
 
         <select
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+          onChange={(e) => {
+            setSelectedCategory(e.target.value)
+            handleSearch(e.target.value)
+          }}
         >
           <option value="">Alle Kategorier</option>
           {categories.map((cat) => (
