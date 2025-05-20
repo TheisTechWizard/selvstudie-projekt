@@ -19,6 +19,37 @@
     }
   }
 }
+
+.profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #e2e8f0;
+  margin-bottom: 1rem;
+}
+
+.user-info p {
+  margin: 0.3rem 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+button {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+}
 .annonce-item {
   background: white;
   width: 300px;

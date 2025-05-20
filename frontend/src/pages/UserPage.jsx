@@ -3,14 +3,16 @@ import { useParams } from "react-router-dom"
 import Button from "../components/button.jsx"
 import Card from "../components/card.jsx"
 import CardContent from "../components/cardContent.jsx"
-import EditAnnoncer from "../components/editAnnoncer" // importér redigeringsmodal
-import CreateAnnonce from "../components/createAnnonce" // husk at importere hvis du bruger denne modal
+import EditAnnoncer from "../components/editAnnoncer"
+import CreateAnnonce from "../components/createAnnonce"
 import "../../src/assets/scss/pages/userPage.scss"
 
 const UserPage = () => {
   const { userId } = useParams()
   const [user, setUser] = useState(null)
   const [listings, setListings] = useState([])
+  const [categories, setCategories] = useState([])
+
   const [selectedAnnonce, setSelectedAnnonce] = useState(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -38,7 +40,26 @@ const UserPage = () => {
       }
     }
 
-    const fetchUserListings = async () => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories/", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        if (response.ok) {
+          const data = await response.json()
+          setCategories(data)
+
+          // Når vi har kategorier, henter vi annoncer
+          fetchUserListings(data)
+        } else {
+          console.error("Kunne ikke hente kategorier")
+        }
+      } catch (err) {
+        console.error("Fejl:", err)
+      }
+    }
+
+    const fetchUserListings = async (fetchedCategories) => {
       const response = await fetch(`/api/users/${userId}/annoncer/`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -47,14 +68,28 @@ const UserPage = () => {
 
       if (response.ok) {
         const data = await response.json()
-        setListings(data)
+
+        // Tilføj kategori-info til hver annonce
+        const enriched = data.map((annonce) => {
+          const matchedCategories = annonce.categories
+            ? fetchedCategories.filter((cat) =>
+                annonce.categories.includes(cat.id)
+              )
+            : []
+          return {
+            ...annonce,
+            category_details: matchedCategories,
+          }
+        })
+
+        setListings(enriched)
       } else {
         console.error("Kunne ikke hente brugerens annoncer")
       }
     }
 
     fetchUserData()
-    fetchUserListings()
+    fetchCategories()
   }, [userId, token])
 
   const handleDelete = async (id) => {
@@ -104,6 +139,16 @@ const UserPage = () => {
                 <h2>{item.title}</h2>
                 <p>{item.description}</p>
                 <p>{item.price} kr.</p>
+
+                {/* VIS KATEGORIER */}
+                <div className="kategori-tags">
+                  {item.category_details?.map((cat) => (
+                    <span key={cat.id} className="category-tag">
+                      {cat.name}
+                    </span>
+                  ))}
+                </div>
+
                 <div className="footer">
                   <div className="actions">
                     <Button
@@ -129,7 +174,7 @@ const UserPage = () => {
           isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
           onSuccess={(newAnnonce) => {
-            setListings((prev) => [newAnnonce, ...prev]) // Opdater listings, ikke annoncer
+            setListings((prev) => [newAnnonce, ...prev])
             setIsCreateModalOpen(false)
           }}
         />
