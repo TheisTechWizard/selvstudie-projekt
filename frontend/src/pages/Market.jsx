@@ -4,6 +4,7 @@ import Card from "../components/card.jsx"
 import CardContent from "../components/cardContent.jsx"
 import CreateAnnonce from "../components/createAnnonce"
 import EditAnnoncer from "../components/editAnnoncer"
+import GoogleMaps from "../components/googleMaps.jsx"
 
 const Annoncer = () => {
   const [annoncer, setAnnoncer] = useState([])
@@ -242,6 +243,7 @@ const Annoncer = () => {
               Køb
             </button>
           </div>
+        <GoogleMaps address="Aalborg"/>
         </div>
       )}
     </div>

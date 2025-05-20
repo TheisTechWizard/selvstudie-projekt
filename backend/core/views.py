@@ -1,6 +1,9 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.conf import settings
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -9,6 +12,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from uuid import UUID
 from .models import Annonce, Category, CustomUser
 from .serializers import UserSerializer, AnnonceSerializer, CategorySerializer
+from .models import Annonce, Category
+
+from .utils.google_maps import geocode_address
 
 # Brugerregistrering
 @api_view(['POST'])
@@ -142,3 +148,36 @@ def get_categories(request):
     categories = Category.objects.all()
     serializer = CategorySerializer(categories, many=True)
     return Response(serializer.data)
+
+#Google maps
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def get_coords(request):
+    address = request.data.get("address")
+    if not address:
+        return Response({"error": "Address required"}, status=400)
+
+    results = geocode_address(address)
+    if not results:
+        return Response({"error": "No result found"}, status=404)
+
+    location = results[0]['geometry']['location']
+    return Response({
+        "lat": location['lat'],
+        "lng": location['lng']
+    })
+
+#Code on demand Google maps JavaScript
+def google_maps_loader(request):
+    api_key = settings.GOOGLE_MAPS_API_KEY
+    js = f"""
+    const script = document.createElement('script');
+    script.src = "https://maps.googleapis.com/maps/api/js?key={api_key}&callback=initMap";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {{
+        window.dispatchEvent(new Event("google-maps-loaded"));
+    }};
+    document.head.appendChild(script);
+    """
+    return HttpResponse(js, content_type="application/javascript")

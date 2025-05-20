@@ -6,9 +6,11 @@ from .views import (
     create_annonce,
     manage_annoncer,
     get_categories,
-    login,
-    get_user,
-    get_user_annoncer
+    login, 
+    get_user, 
+    get_user_annoncer,
+    get_coords,
+    google_maps_loader
 )
 
 urlpatterns = [

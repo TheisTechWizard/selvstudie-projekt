@@ -10,6 +10,10 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      'api/maps-loader.js': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
     },
   },
 })
