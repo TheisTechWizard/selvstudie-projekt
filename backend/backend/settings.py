@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta 
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -98,21 +99,29 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     #If our server explodes use local image
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_db',
-        'USER': 'django',
-        'PASSWORD': 'mysecretpassword',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql',
     #     'NAME': 'django_db',
     #     'USER': 'django',
-    #     'PASSWORD': 'supersecret',
-    #     'HOST': '79.171.148.183',
+    #     'PASSWORD': 'mysecretpassword',
+    #     'HOST': 'localhost',
     #     'PORT': '5432',
+    # }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'django_db',
+        'USER': 'django',
+        'PASSWORD': 'supersecret',
+        'HOST': '79.171.148.183',
+        'PORT': '5432',
+    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': os.getenv("DB_NAME"),
+    #     'USER': os.getenv("DB_USER"),
+    #     'PASSWORD': os.getenv("DB_PASSWORD"),
+    #     'HOST': os.getenv("DB_HOST"),
+    #     'PORT': os.getenv("DB_PORT", "5432"),
     # }
 }
 
@@ -159,6 +168,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Medieindstillinger (billeder, uploads)
-import os
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

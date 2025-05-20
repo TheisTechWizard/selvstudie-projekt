@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_DB: django_db
+      POSTGRES_USER: django
+      POSTGRES_PASSWORD: supersecret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    container_name: django-backend
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_NAME=django_db
+      - DB_USER=django
+      - DB_PASSWORD=supersecret
+      - DB_HOST=db
+      - DB_PORT=5432
+
+  frontend:
+    build: 
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: react-frontend
+    ports:
+      - "3000:5173"
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    working_dir: /app
+
+volumes:
+  pgdata:
