@@ -35,6 +35,7 @@ const UserPage = () => {
           annonces: data.annonces_count || 0,
           image: data.image,
         })
+        console.log("Kategorier hentet:", categories)
       } else {
         console.error("Kunne ikke hente brugerdata")
       }
