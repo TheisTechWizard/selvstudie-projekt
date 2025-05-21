@@ -11,6 +11,7 @@ const UserPage = () => {
   const [user, setUser] = useState(null)
   const [listings, setListings] = useState([])
   const [categories, setCategories] = useState([])
+  const [isListingsLoaded, setIsListingsLoaded] = useState(false)
 
   const [selectedAnnonce, setSelectedAnnonce] = useState(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -18,79 +19,77 @@ const UserPage = () => {
   const token = localStorage.getItem("token")
   const backendUrl = import.meta.env.VITE_BACKEND_URL
 
+  const fetchUserData = async () => {
+    const response = await fetch(`/api/users/${userId}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      setUser({
+        name: data.username,
+        email: data.email,
+        annonces: data.annonces_count || 0,
+        image: data.image,
+      })
+    } else {
+      console.error("Kunne ikke hente brugerdata")
+    }
+  }
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      const response = await fetch(`/api/users/${userId}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        setUser({
-          name: data.username,
-          email: data.email,
-          annonces: data.annonces_count || 0,
-          image: data.image,
-        })
-        console.log("Kategorier hentet:", categories)
-      } else {
-        console.error("Kunne ikke hente brugerdata")
-      }
-    }
-
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch("/api/categories/", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        if (response.ok) {
-          const data = await response.json()
-          setCategories(data)
-
-          // Når vi har kategorier, henter vi annoncer
-          fetchUserListings(data)
-        } else {
-          console.error("Kunne ikke hente kategorier")
-        }
-      } catch (err) {
-        console.error("Fejl:", err)
-      }
-    }
-
-    const fetchUserListings = async (fetchedCategories) => {
-      const response = await fetch(`/api/users/${userId}/annoncer/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-
-        // Tilføj kategori-info til hver annonce
-        const enriched = data.map((annonce) => {
-          const matchedCategories = annonce.categories
-            ? fetchedCategories.filter((cat) =>
-                annonce.categories.includes(cat.id)
-              )
-            : []
-          return {
-            ...annonce,
-            category_details: matchedCategories,
-          }
-        })
-
-        setListings(enriched)
-      } else {
-        console.error("Kunne ikke hente brugerens annoncer")
-      }
-    }
-
     fetchUserData()
     fetchCategories()
   }, [userId, token])
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("/api/categories/", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setCategories(data)
+        fetchUserListings(data)
+        console.log(categories)
+      } else {
+        console.error("Kunne ikke hente kategorier")
+      }
+    } catch (err) {
+      console.error("Fejl:", err)
+    }
+  }
+
+  const fetchUserListings = async (fetchedCategories) => {
+    const response = await fetch(`/api/users/${userId}/annoncer/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+
+      const enriched = data.map((annonce) => {
+        const matchedCategories = annonce.categories
+          ? fetchedCategories.filter((cat) =>
+              annonce.categories.includes(cat.id)
+            )
+          : []
+        return {
+          ...annonce,
+          category_details: matchedCategories,
+        }
+      })
+
+      setListings(enriched)
+      setIsListingsLoaded(true)
+    } else {
+      console.error("Kunne ikke hente brugerens annoncer")
+    }
+  }
 
   const handleDelete = async (id) => {
     if (!window.confirm("Er du sikker på, at du vil slette denne annonce?"))
@@ -103,6 +102,7 @@ const UserPage = () => {
 
     if (response.ok) {
       setListings((prev) => prev.filter((annonce) => annonce.id !== id))
+      fetchUserData()
     } else {
       alert("Du har ikke tilladelse til at slette denne annonce!")
     }
@@ -116,15 +116,15 @@ const UserPage = () => {
         <img src={user.image} alt="User" className="profile-img" />
         <div className="user-info">
           <p>{user.name}</p>
-          <p>Antal annoncer: {user.annonces}</p>
+          {isListingsLoaded && <p>Antal annoncer: {listings.length}</p>}
         </div>
-        <button onClick={() => setIsCreateModalOpen(true)}>
-          + Opret Annonce
-        </button>
       </section>
 
       <section className="annonce-section">
         <h3>Mine Annoncer</h3>
+        <button onClick={() => setIsCreateModalOpen(true)}>
+          + Opret Annonce
+        </button>
         <div className="annonce-list">
           {listings.map((item) => (
             <Card key={item.id} className="annonce-item">
@@ -140,7 +140,6 @@ const UserPage = () => {
                 <p>{item.description}</p>
                 <p>{item.price} kr.</p>
 
-                {/* VIS KATEGORIER */}
                 <div className="kategori-tags">
                   {item.category_details?.map((cat) => (
                     <span key={cat.id} className="category-tag">
@@ -168,7 +167,6 @@ const UserPage = () => {
         </div>
       </section>
 
-      {/* Opret modal */}
       {isCreateModalOpen && (
         <CreateAnnonce
           isOpen={isCreateModalOpen}
@@ -176,11 +174,11 @@ const UserPage = () => {
           onSuccess={(newAnnonce) => {
             setListings((prev) => [newAnnonce, ...prev])
             setIsCreateModalOpen(false)
+            fetchUserData()
           }}
         />
       )}
 
-      {/* Rediger modal */}
       {isEditModalOpen && selectedAnnonce && (
         <EditAnnoncer
           isOpen={isEditModalOpen}
