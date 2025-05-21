@@ -5,6 +5,7 @@ import CardContent from "../components/cardContent.jsx"
 import CreateAnnonce from "../components/createAnnonce"
 import EditAnnoncer from "../components/editAnnoncer"
 import GoogleMaps from "../components/googleMaps.jsx"
+import CreateSavedSearch from "../components/CreateSavedSearch.jsx"
 
 const Annoncer = () => {
   const [annoncer, setAnnoncer] = useState([])
@@ -13,6 +14,7 @@ const Annoncer = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
+  const [isSavedSearchModalOpen, setIsSavedSearchModalOpen] = useState(false)
 
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
@@ -120,7 +122,12 @@ const Annoncer = () => {
         <button className="search-btn" onClick={handleSearch}>
           🔍
         </button>
+        <button className="save-search-btn" onClick={() => setIsSavedSearchModalOpen(true)}>
+          + Gem søgning
+        </button>
       </div>
+
+      {isSavedSearchModalOpen && (<CreateSavedSearch isOpen={isSavedSearchModalOpen} onClose={() => setIsSavedSearchModalOpen(false)} categories={categories}/>)}
 
       {token ? (
         <button onClick={() => setIsCreateModalOpen(true)}>

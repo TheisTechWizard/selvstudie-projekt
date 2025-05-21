@@ -1,0 +1,317 @@
+openapi: 3.0.3
+info:
+  title: Annonce API
+  version: 1.0.0
+  description: API for user registration, login, annoncer, categories, saved searches, and Google Maps geocoding.
+
+servers:
+  - url: http://localhost:8000/
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        username:
+          type: string
+
+    Annonce:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        content:
+          type: string
+        price:
+          type: number
+        categories:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+
+    SavedSearch:
+      type: object
+      properties:
+        keyword:
+          type: string
+        max_price:
+          type: number
+        categories:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+paths:
+  /register/:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+
+  /login/:
+    post:
+      summary: Login and get JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: JWT Token + User Info
+        '400':
+          description: Invalid credentials
+
+  /token/refresh/:
+    post:
+      summary: Refresh JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed
+
+  /annoncer/:
+    get:
+      summary: Get all annoncer
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: categories
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of annoncer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annonce'
+
+  /annoncer/create/:
+    post:
+      summary: Create a new annonce
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Annonce'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Validation error
+
+  /annoncer/{annonce_id}/:
+    get:
+      summary: Get single annonce (owned)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: annonce_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Annonce data
+    put:
+      summary: Update annonce (owned)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: annonce_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Annonce'
+      responses:
+        '200':
+          description: Updated
+    delete:
+      summary: Delete annonce (owned)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: annonce_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Deleted
+
+  /categories/:
+    get:
+      summary: Get all categories
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+
+  /users/{user_id}/:
+    get:
+      summary: Get user data (self)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: User info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '403':
+          description: Forbidden
+
+  /users/{user_id}/annoncer/:
+    get:
+      summary: Get annoncer for user
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: User's annoncer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Annonce'
+
+  /maps/geocode/:
+    post:
+      summary: Geocode an address using Google Maps API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+      responses:
+        '200':
+          description: Coordinates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lat:
+                    type: number
+                  lng:
+                    type: number
+        '404':
+          description: Address not found
+
+  /maps-loader.js:
+    get:
+      summary: Load Google Maps script
+      responses:
+        '200':
+          description: JavaScript loader
+
+  /api/saved-searches/:
+    post:
+      summary: Save a new search
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SavedSearch'
+      responses:
+        '201':
+          description: Saved
+        '400':
+          description: Validation error

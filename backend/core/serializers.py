@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Annonce, Category, CustomUser
+from .models import Annonce, Category, CustomUser, SavedSearch
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -50,3 +50,17 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+    
+
+class SavedSearchSerializer(serializers.ModelSerializer):
+    category_details = CategorySerializer(source='categories', many=True, read_only=True)
+
+    class Meta:
+        model = SavedSearch
+        fields = [
+            'id',
+            'keyword',
+            'max_price',
+            'categories',
+            'category_details'
+        ]

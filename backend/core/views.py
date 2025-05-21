@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from uuid import UUID
 from .models import Annonce, Category, CustomUser
-from .serializers import UserSerializer, AnnonceSerializer, CategorySerializer
+from .serializers import UserSerializer, AnnonceSerializer, CategorySerializer, SavedSearchSerializer
 from .models import Annonce, Category
 
 from .utils.google_maps import geocode_address
@@ -103,7 +103,44 @@ def get_annoncer(request):
 def create_annonce(request):
     serializer = AnnonceSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save(user=request.user)
+        annonce = serializer.save(user=request.user)
+
+        from django.core.mail import send_mail
+        from .models import SavedSearch
+
+        saved_searches = SavedSearch.objects.all()
+
+        for search in saved_searches:
+            match = True
+
+            # Titel-søgeord
+            if search.keyword and search.keyword.lower() not in annonce.title.lower():
+                match = False
+
+            # Maks pris
+            if search.max_price:
+                try:
+                    annonce_price = float(annonce.price)
+                    if annonce_price > float(search.max_price):
+                        match = False
+                except ValueError:
+                    pass  # spring pris-tjek over hvis ikke konvertérbart
+
+            # Kategori
+            if search.categories.exists():
+                if not annonce.categories.filter(id__in=search.categories.all()).exists():
+                    match = False
+
+            if match:
+                send_mail(
+                    subject="Ny annonce matcher din søgning!",
+                    message=f"{annonce.title} ({annonce.price}) matcher dine kriterier.",
+                    from_email="noreply@din-side.dk",
+                    recipient_list=[search.user.email],
+                    fail_silently=True,
+                )
+
+        # serializer.save(user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -181,3 +218,12 @@ def google_maps_loader(request):
     document.head.appendChild(script);
     """
     return HttpResponse(js, content_type="application/javascript")
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_saved_search(request):
+    serializer = SavedSearchSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

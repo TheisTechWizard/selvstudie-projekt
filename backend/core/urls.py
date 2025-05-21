@@ -10,7 +10,8 @@ from .views import (
     get_user, 
     get_user_annoncer,
     get_coords,
-    google_maps_loader
+    google_maps_loader,
+    create_saved_search
 )
 
 urlpatterns = [
@@ -25,4 +26,5 @@ urlpatterns = [
     path("users/<uuid:user_id>/annoncer/", get_user_annoncer, name='get_user_annoncer'), 
     path("maps/geocode/", get_coords, name="get_coords"),
     path("maps-loader.js", google_maps_loader),
+    path('api/saved-searches/', create_saved_search, name='create_saved_search'),
 ]
