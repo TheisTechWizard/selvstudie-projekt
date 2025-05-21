@@ -24,6 +24,7 @@ class Annonce(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     categories = models.ManyToManyField(Category, related_name="annoncer")
+    address = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         verbose_name = "Annonce"

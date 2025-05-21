@@ -57,6 +57,13 @@ const Annoncer = () => {
       .catch((error) =>
         console.error("Fejl ved hentning af kategorier:", error)
       )
+
+    if (!document.getElementById("google-maps-loader")) {
+      const script = document.createElement("script");
+      script.src = "api/maps-loader.js";
+      script.id = "google-maps-loader";
+      document.head.appendChild(script);
+    }
   }, [])
 
   const handleSearch = () => {
@@ -242,7 +249,7 @@ const Annoncer = () => {
             <button onClick={() => alert("Købsfunktion ikke implementeret")}>
               Køb
             </button>
-            <GoogleMaps address="Ny Kastetvej 24"/>
+            <GoogleMaps address={selectedAnnonce.address}/>
           </div>
         </div>
       )}

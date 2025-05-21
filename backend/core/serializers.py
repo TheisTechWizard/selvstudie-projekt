@@ -31,7 +31,8 @@ class AnnonceSerializer(serializers.ModelSerializer):
             'categories',         # ID-liste til write
             'category_details',   # Navn/id-liste til read
             'created_at',
-            'user_username'
+            'user_username',
+            'address'
         ]
 
 class UserSerializer(serializers.ModelSerializer):

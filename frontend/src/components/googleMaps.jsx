@@ -5,13 +5,6 @@ function MapComponent({ address }) {
   const mapRef = useRef(null);
 
   useEffect(() => {
-
-    if (!document.getElementById("google-maps-loader")) {
-        const script = document.createElement("script");
-        script.src = "api/maps-loader.js";
-        script.id = "google-maps-loader";
-        document.head.appendChild(script);
-      }
     
       window.initMap = () => {
         new window.google.maps.Map(document.getElementById("map"), {
