@@ -6,36 +6,35 @@ nav {
   border-radius: 12px;
 }
 
-  .nav-links,
-  .nav-auth {
-    display: flex;
-    gap: 20px;
-    align-items: center;
+.nav-links,
+.nav-auth {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
+}
 
-  a {
-    color: white;
-    font-weight: bold;
-    text-decoration: none;
+.Log-ind-ud {
+  background-color: white;
+  color: #2196f3;
+  font-weight: bold;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  margin: 0;
 
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .Log-ind-ud {
-    background-color: white;
-    color: #2196f3;
-    font-weight: bold;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    margin: 0;
-
-    &:hover {
-      background-color: #f1f1f1;
-    }
+  &:hover {
+    background-color: #f1f1f1;
   }
 }
