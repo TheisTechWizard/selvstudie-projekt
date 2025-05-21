@@ -3,38 +3,38 @@ nav {
   padding: 10px 20px;
   display: flex;
   align-items: center;
-  border-radius: 12px;
-}
+  justify-content: space-between; // <-- skubber grupperne fra hinanden
 
-.nav-links,
-.nav-auth {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-
-a {
-  color: white;
-  font-weight: bold;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
+  .nav-links,
+  .nav-auth {
+    display: flex;
+    gap: 20px;
+    align-items: center;
   }
-}
 
-.Log-ind-ud {
-  background-color: white;
-  color: #2196f3;
-  font-weight: bold;
-  border: none;
-  padding: 8px 16px;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-  margin: 0;
+  a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
 
-  &:hover {
-    background-color: #f1f1f1;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .Log-ind-ud {
+    background-color: white;
+    color: #2196f3;
+    font-weight: bold;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    margin: 0;
+
+    &:hover {
+      background-color: #f1f1f1;
+    }
   }
 }

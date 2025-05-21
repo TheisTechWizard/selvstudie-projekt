@@ -113,7 +113,6 @@ const UserPage = () => {
   return (
     <div className="user-page">
       <section className="profile-card">
-        <img src={user.image} alt="User" className="profile-img" />
         <div className="user-info">
           <p>{user.name}</p>
           {isListingsLoaded && <p>Antal annoncer: {listings.length}</p>}
