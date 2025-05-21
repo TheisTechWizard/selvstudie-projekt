@@ -6,9 +6,13 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:8000", // <- Din Django server
+        target: "http://localhost:8000/", // <- Din Django server
         changeOrigin: true,
         secure: false,
+      },
+      'api/maps-loader.js': {
+        target: 'http://localhost:8000/',
+        changeOrigin: true,
       },
     },
   },
