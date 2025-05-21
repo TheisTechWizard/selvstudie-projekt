@@ -1,0 +1,10 @@
+.annonce-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .file-upload {
+        display: flex;
+        justify-content: flex-end
+    }
+}

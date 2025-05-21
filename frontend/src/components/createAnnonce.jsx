@@ -11,6 +11,7 @@ const CreateAnnonceModal = ({ isOpen, onClose, onSuccess }) => {
   const [price, setPrice] = useState("")
   const [categories, setCategories] = useState([])
   const [selectedCategories, setSelectedCategories] = useState([])
+  const [address, setAddress] = useState("")
 
   const token = localStorage.getItem("token")
 
@@ -28,6 +29,7 @@ const CreateAnnonceModal = ({ isOpen, onClose, onSuccess }) => {
     formData.append("title", title)
     formData.append("content", content)
     formData.append("price", price)
+    formData.append("address", address)
     selectedCategories.forEach((cat) => formData.append("categories", cat))
     if (image) formData.append("image", image)
 
@@ -78,7 +80,7 @@ const CreateAnnonceModal = ({ isOpen, onClose, onSuccess }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <h2>Opret annonce</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="annonce-form">
         <Input
           type="text"
           placeholder="Titel"
@@ -86,11 +88,13 @@ const CreateAnnonceModal = ({ isOpen, onClose, onSuccess }) => {
           onChange={(e) => setTitle(e.target.value)}
           required
         />
-        <Input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files[0])}
-        />
+        <div className="file-upload">
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+          />
+        </div>
         <textarea
           placeholder="Beskrivelse"
           value={content}
@@ -119,6 +123,13 @@ const CreateAnnonceModal = ({ isOpen, onClose, onSuccess }) => {
             </option>
           ))}
         </select>
+        <Input
+          type="text"
+          placeholder="Adresse"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          required
+        />
         <div className="modal-buttons">
           <Button type="submit">Opret</Button>
           <Button type="button" onClick={onClose}>
