@@ -14,6 +14,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const navigate = useNavigate()
 
+  // Kør kun én gang ved mount for at tjekke token i localStorage
   useEffect(() => {
     const token = localStorage.getItem("token")
     setIsAuthenticated(!!token)
@@ -22,6 +23,7 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
+    localStorage.removeItem("userId")
     setIsAuthenticated(false)
     navigate("/")
   }
@@ -68,7 +70,13 @@ function App() {
         />
         <Route
           path="/login"
-          element={<Login setIsAuthenticated={setIsAuthenticated} />}
+          element={
+            <Login
+              setIsAuthenticated={setIsAuthenticated}
+              // Hvis du bruger navigate i Login, skal du sende den med som prop
+              navigate={navigate}
+            />
+          }
         />
         <Route path="/register" element={<Register />} />
       </Routes>
