@@ -6,6 +6,7 @@ import Market from "./pages/Market"
 import UserPage from "./pages/UserPage"
 import Login from "./pages/login"
 import Register from "./pages/register"
+import ProtectedRoute from "./components/ProtectedRoute"
 import "./assets/scss/main.scss"
 import "../src/assets/scss/components/nav.scss"
 
@@ -46,7 +47,11 @@ function App() {
         <Route path="/market" element={<Market />} />
         <Route
           path="/user/:userId"
-          element={isAuthenticated ? <UserPage /> : <Navigate to="/login" />}
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <UserPage />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/login"
