@@ -8,6 +8,7 @@
   background-color: #f0f4f8;
   font-family: "Segoe UI", sans-serif;
   padding: 32px 32px 64px;
+
   h2 {
     text-align: center;
     color: #003c74;
@@ -84,7 +85,8 @@
   transition: transform 0.2s ease;
   display: flex;
   flex-direction: column;
-  height: 100%; /* Sikrer ens højde hvis parent har grid auto-fill */
+  height: 100%;
+  /* Sikrer ens højde hvis parent har grid auto-fill */
 
   &:hover {
     transform: translateY(-5px);
@@ -134,7 +136,8 @@
   }
 
   .footer {
-    margin-top: auto; /* ⬇️ Skubber den til bunden */
+    margin-top: auto;
+    /* ⬇️ Skubber den til bunden */
     display: flex;
     justify-content: space-between;
     align-items: center;

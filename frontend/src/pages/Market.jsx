@@ -2,8 +2,9 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import Card from "../components/card.jsx"
 import CardContent from "../components/cardContent.jsx"
-import CreateAnnonce from "../components/createAnnonce.jsx"
-import EditAnnoncer from "../components/editAnnoncer.jsx"
+import CreateAnnonce from "../components/createAnnonce"
+import EditAnnoncer from "../components/editAnnoncer"
+import GoogleMaps from "../components/googleMaps.jsx"
 import "../../src/assets/scss/pages/Market.scss"
 
 const Annoncer = () => {
@@ -18,7 +19,6 @@ const Annoncer = () => {
   const [selectedCategory, setSelectedCategory] = useState("")
   const backendUrl = import.meta.env.VITE_BACKEND_URL
   const token = localStorage.getItem("token")
-  const username = localStorage.getItem("username")
 
   useEffect(() => {
     // Først hent kategorier
@@ -159,7 +159,8 @@ const Annoncer = () => {
                 Se mere
               </button>
 
-              {username === annonce.user_username && (
+              {String(localStorage.getItem("userId")) ===
+                String(annonce.user_id) && (
                 <>
                   <button
                     onClick={() => {
@@ -243,6 +244,7 @@ const Annoncer = () => {
               Køb
             </button>
           </div>
+          <GoogleMaps address="Aalborg" />
         </div>
       )}
     </div>

@@ -21,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-&)3ds*d^y2orvw=f1h6my=8*rlqa6q*+3p83&8gpx@99#h!+zz'
+GOOGLE_MAPS_API_KEY = "AIzaSyAgUdRRImH8K2R1ayKwsHHOp4UNA_gKvpw"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -42,6 +43,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'core',
 ]
+
+AUTH_USER_MODEL = 'core.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -98,22 +101,22 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     #If our server explodes use local image
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_db',
-        'USER': 'django',
-        'PASSWORD': 'mysecretpassword',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql',
     #     'NAME': 'django_db',
     #     'USER': 'django',
-    #     'PASSWORD': 'supersecret',
-    #     'HOST': '79.171.148.183',
+    #     'PASSWORD': 'mysecretpassword',
+    #     'HOST': 'localhost',
     #     'PORT': '5432',
     # }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'django_db',
+        'USER': 'django',
+        'PASSWORD': 'supersecret',
+        'HOST': '79.171.148.183',
+        'PORT': '5432',
+    }
 }
 
 
@@ -162,3 +165,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 import os
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# SIKKERHEDSINDSTILLINGER
+
+SESSION_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = not DEBUG
+
+SECURE_SSL_REDIRECT = not DEBUG
+SECURE_HSTS_SECONDS = 31536000  # 1 år
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True

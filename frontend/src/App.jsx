@@ -1,17 +1,20 @@
 import { useState, useEffect } from "react"
-import { Routes, Route, Link, Navigate } from "react-router-dom"
+import { Routes, Route, Link, Navigate, useNavigate } from "react-router-dom"
 import Home from "./pages/Home"
 import About from "./pages/About"
 import Market from "./pages/Market"
 import UserPage from "./pages/UserPage"
 import Login from "./pages/login"
 import Register from "./pages/register"
+import ProtectedRoute from "./components/ProtectedRoute"
 import "./assets/scss/main.scss"
 import "../src/assets/scss/components/nav.scss"
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const navigate = useNavigate()
 
+  // Kør kun én gang ved mount for at tjekke token i localStorage
   useEffect(() => {
     const token = localStorage.getItem("token")
     setIsAuthenticated(!!token)
@@ -20,24 +23,37 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
+    localStorage.removeItem("userId")
     setIsAuthenticated(false)
+    navigate("/")
   }
 
   return (
     <div>
       <nav>
-        <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
-        <Link to="/market">Market</Link>
-        <Link to={`/user/${localStorage.getItem("userId")}`}>User</Link>
-        {isAuthenticated ? (
-          <button onClick={handleLogout}>Log ud</button>
-        ) : (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Registrer</Link>
-          </>
-        )}
+        <div className="nav-links">
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
+          <Link to="/market">Market</Link>
+          <Link to={`/user/${localStorage.getItem("userId")}`}>User</Link>
+        </div>
+
+        <div className="nav-auth">
+          {isAuthenticated ? (
+            <button className="Log-ind-ud" onClick={handleLogout}>
+              Log ud
+            </button>
+          ) : (
+            <>
+              <Link className="Log-ind-ud" to="/login">
+                Login
+              </Link>
+              <Link className="Log-ind-ud" to="/register">
+                Registrer
+              </Link>
+            </>
+          )}
+        </div>
       </nav>
 
       <Routes>
@@ -46,11 +62,21 @@ function App() {
         <Route path="/market" element={<Market />} />
         <Route
           path="/user/:userId"
-          element={isAuthenticated ? <UserPage /> : <Navigate to="/login" />}
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <UserPage />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/login"
-          element={<Login setIsAuthenticated={setIsAuthenticated} />}
+          element={
+            <Login
+              setIsAuthenticated={setIsAuthenticated}
+              // Hvis du bruger navigate i Login, skal du sende den med som prop
+              navigate={navigate}
+            />
+          }
         />
         <Route path="/register" element={<Register />} />
       </Routes>

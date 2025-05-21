@@ -1,3 +1,9 @@
 @use 'pages/home';
+@use 'pages/userPage.scss';
+@use 'pages/Market.scss';
 
-@use 'components/testComp';
+@use 'components/button.scss';
+@use 'components/card.scss';
+@use 'components/input.scss';
+@use 'components/nav.scss';
+@use 'components/modal.scss';

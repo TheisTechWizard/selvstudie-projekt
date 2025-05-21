@@ -38,6 +38,14 @@ const Register = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
           name="username"
           placeholder="Brugernavn"
           value={formData.username}
