@@ -31,6 +31,7 @@ class AnnonceSerializer(serializers.ModelSerializer):
             'created_at',
             'user_username',
             'user_id',
+            'address'
         ]
 
 

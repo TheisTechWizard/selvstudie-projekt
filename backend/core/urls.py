@@ -23,4 +23,6 @@ urlpatterns = [
     path('categories/', get_categories, name='get_categories'),
     path('users/<uuid:user_id>/', get_user, name='get_user'),                      
     path("users/<uuid:user_id>/annoncer/", get_user_annoncer, name='get_user_annoncer'), 
+    path("maps/geocode/", get_coords, name="get_coords"),
+    path("maps-loader.js", google_maps_loader),
 ]
